@@ -21,7 +21,6 @@ import {
   X,
   FileText,
   LogOut,
-  Info,
 } from 'lucide-react-native';
 import { useAuth } from '../context/AuthContext';
 import { COLORS } from '../constants/theme';
@@ -30,6 +29,7 @@ import { File } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
 const MANUAL_PDF = require('../../assets/MANUAL DO USUÁRIO.pdf');
+const SIMULADOS_PDF = require('../../assets/SIMULADOS.pdf');
 
 export default function Header() {
   const insets = useSafeAreaInsets();
@@ -39,6 +39,7 @@ export default function Header() {
   const [menuAberto, setMenuAberto] = useState(false);
   const [perfilAberto, setPerfilAberto] = useState(false);
   const [modalSimulados, setModalSimulados] = useState(false);
+  const [simuladosAbrindo, setSimuladosAbrindo] = useState(false);
   const [modalManual, setModalManual] = useState(false);
   const [manualAbrindo, setManualAbrindo] = useState(false);
 
@@ -107,6 +108,51 @@ export default function Header() {
       );
     } finally {
       setManualAbrindo(false);
+    }
+  };
+
+  const abrirPdfSimulados = async () => {
+    setSimuladosAbrindo(true);
+    try {
+      const asset = Asset.fromModule(SIMULADOS_PDF);
+
+      if (Platform.OS === 'web') {
+        const pdfUrl = new URL(asset.uri, window.location.href).toString();
+        const pdfTab = window.open('about:blank', '_blank');
+        if (pdfTab) {
+          pdfTab.location.replace(pdfUrl);
+        } else {
+          window.location.assign(pdfUrl);
+        }
+        setModalSimulados(false);
+        return;
+      }
+
+      await asset.downloadAsync();
+      if (!asset.localUri) {
+        throw new Error('O arquivo de simulados não foi encontrado no dispositivo.');
+      }
+
+      const arquivo = new File(asset.localUri);
+      try {
+        await arquivo.preview({ title: 'Simulados Preparatórios' });
+      } catch (erroPreview) {
+        if (!(await Sharing.isAvailableAsync())) {
+          throw erroPreview;
+        }
+        await Sharing.shareAsync(arquivo.uri, {
+          dialogTitle: 'Simulados Preparatórios',
+          mimeType: 'application/pdf',
+        });
+      }
+      setModalSimulados(false);
+    } catch {
+      Alert.alert(
+        'Simulados indisponíveis',
+        'Não foi possível abrir o PDF de simulados neste dispositivo.',
+      );
+    } finally {
+      setSimuladosAbrindo(false);
     }
   };
 
@@ -244,12 +290,24 @@ export default function Header() {
             <Text style={styles.infoModalDesc}>
               A plataforma HDPA disponibiliza cadernos de simulados completos para os vestibulares ENEM, USP (FUVEST), UNICAMP, UNESP e PUC.
             </Text>
-            <View style={styles.infoModalBadge}>
-              <Info size={18} color={COLORS.primary} />
-              <Text style={styles.infoModalBadgeText}>
-                Arquivo original: SIMULADOS.pdf integrado ao ecossistema da aplicação.
-              </Text>
-            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Abrir arquivo PDF de simulados"
+              disabled={simuladosAbrindo}
+              style={({ pressed }) => [
+                styles.simuladosOpenButton,
+                pressed && styles.manualActionPressed,
+                simuladosAbrindo && { opacity: 0.7 },
+              ]}
+              onPress={abrirPdfSimulados}
+            >
+              <FileText size={18} color="#ffffff" />
+              {simuladosAbrindo ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <Text style={styles.simuladosOpenButtonText}>Abrir PDF dos simulados</Text>
+              )}
+            </Pressable>
             <Pressable
               style={styles.infoModalCloseButton}
               onPress={() => setModalSimulados(false)}
@@ -488,6 +546,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.primary,
     lineHeight: 18,
+  },
+  simuladosOpenButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    minHeight: 48,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+  },
+  simuladosOpenButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '700',
   },
   manualPoints: {
     backgroundColor: '#f8f9fa',
