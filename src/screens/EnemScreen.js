@@ -6,19 +6,24 @@ import { COLORS } from '../constants/theme';
 
 export default function EnemScreen() {
   return (
+    // Estrutura principal da página informativa do ENEM.
     <View style={styles.container}>
+      {/* Cabeçalho global e menu de seleção das universidades. */}
       <Header />
       <Menu />
 
+      {/* Área rolável que contém todo o conteúdo institucional e informativo. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.main}>
+          {/* Título principal da seção exibida no topo da página. */}
           <View style={styles.headingSection}>
             <Text style={styles.headingTitle}>Escolas universitárias</Text>
           </View>
 
+          {/* Identificação visual da instituição por meio de uma imagem centralizada. */}
           <View style={styles.imageContainer}>
             <Image
               source={require('../../assets/enem.png')}
@@ -27,6 +32,7 @@ export default function EnemScreen() {
             />
           </View>
 
+          {/* Texto explicativo dividido em parágrafos sobre o ENEM e seu papel no ensino superior. */}
           <View style={styles.textContent}>
             <Text style={styles.paragraph}>
               O Exame Nacional do Ensino Médio, conhecido como ENEM, é uma das principais formas de acesso ao
@@ -71,12 +77,14 @@ export default function EnemScreen() {
           </View>
         </View>
 
+        {/* Rodapé visual fixado ao final do conteúdo rolável. */}
         <View style={styles.footer} />
       </ScrollView>
     </View>
   );
 }
 
+// Folha de estilos da página, dos blocos de texto, da imagem e do rodapé.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
