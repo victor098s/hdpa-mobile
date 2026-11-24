@@ -28,14 +28,17 @@ import { Asset } from 'expo-asset';
 import { File } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
+// Recursos estáticos utilizados pelos modais para abrir os PDFs da aplicação.
 const MANUAL_PDF = require('../../assets/MANUAL DO USUÁRIO.pdf');
 const SIMULADOS_PDF = require('../../assets/SIMULADOS.pdf');
 
 export default function Header() {
+  // Dados de navegação seguros e contexto de autenticação usados pelas ações do cabeçalho.
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { logout } = useAuth();
 
+  // Estados independentes controlam os menus e os modais exibidos pelo componente.
   const [menuAberto, setMenuAberto] = useState(false);
   const [perfilAberto, setPerfilAberto] = useState(false);
   const [modalSimulados, setModalSimulados] = useState(false);
@@ -43,34 +46,40 @@ export default function Header() {
   const [modalManual, setModalManual] = useState(false);
   const [manualAbrindo, setManualAbrindo] = useState(false);
 
+  // Fecha os menus antes de navegar para a tela selecionada.
   const irPara = (rota) => {
     setMenuAberto(false);
     setPerfilAberto(false);
     navigation.navigate(rota);
   };
 
+  // Encerra a sessão após fechar todas as opções de menu abertas.
   const handleSair = async () => {
     setPerfilAberto(false);
     setMenuAberto(false);
     await logout();
   };
 
+  // Abre o conteúdo informativo dos simulados a partir do menu principal.
   const abrirSimulados = () => {
     setMenuAberto(false);
     setModalSimulados(true);
   };
 
+  // Disponibiliza o manual do usuário nos menus mobile e de perfil.
   const abrirManualDoUsuario = () => {
     setPerfilAberto(false);
     setMenuAberto(false);
     setModalManual(true);
   };
 
+  // Resolve e abre o PDF do manual, adaptando o fluxo para web e dispositivos nativos.
   const abrirPdfManual = async () => {
     setManualAbrindo(true);
     try {
       const asset = Asset.fromModule(MANUAL_PDF);
 
+      // Na web, abre o arquivo em uma nova aba ou reutiliza a navegação atual.
       if (Platform.OS === 'web') {
         const pdfUrl = new URL(asset.uri, window.location.href).toString();
         const pdfTab = window.open('about:blank', '_blank');
@@ -83,6 +92,7 @@ export default function Header() {
         return;
       }
 
+      // No ambiente nativo, baixa o asset e tenta usar a prévia antes do compartilhamento.
       await asset.downloadAsync();
       if (!asset.localUri) {
         throw new Error('O arquivo do manual não foi encontrado no dispositivo.');
@@ -92,6 +102,7 @@ export default function Header() {
       try {
         await arquivo.preview({ title: 'Manual do Usuário' });
       } catch (erroPreview) {
+        // Quando não há prévia disponível, oferece o PDF pelo compartilhamento do sistema.
         if (!(await Sharing.isAvailableAsync())) {
           throw erroPreview;
         }
@@ -111,11 +122,13 @@ export default function Header() {
     }
   };
 
+  // Resolve e abre o PDF de simulados, mantendo o mesmo comportamento multiplataforma.
   const abrirPdfSimulados = async () => {
     setSimuladosAbrindo(true);
     try {
       const asset = Asset.fromModule(SIMULADOS_PDF);
 
+      // Na web, direciona o usuário para o PDF em uma nova aba ou na aba atual.
       if (Platform.OS === 'web') {
         const pdfUrl = new URL(asset.uri, window.location.href).toString();
         const pdfTab = window.open('about:blank', '_blank');
@@ -128,6 +141,7 @@ export default function Header() {
         return;
       }
 
+      // No ambiente nativo, prepara o arquivo local para visualização.
       await asset.downloadAsync();
       if (!asset.localUri) {
         throw new Error('O arquivo de simulados não foi encontrado no dispositivo.');
@@ -137,6 +151,7 @@ export default function Header() {
       try {
         await arquivo.preview({ title: 'Simulados Preparatórios' });
       } catch (erroPreview) {
+        // Usa o compartilhamento nativo como alternativa à prévia do PDF.
         if (!(await Sharing.isAvailableAsync())) {
           throw erroPreview;
         }
@@ -158,6 +173,7 @@ export default function Header() {
 
   return (
     <>
+      {/* Cabeçalho principal com área segura para respeitar o notch/status bar. */}
       <View style={[styles.headerContainer, { paddingTop: Math.max(insets.top, 12) }]}>
         <View style={styles.header}>
           {/* Logo como atalho para a Home */}
