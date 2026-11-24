@@ -28,7 +28,10 @@ import { COLORS } from '../constants/theme';
 import { useAuth } from '../context/AuthContext';
 
 export default function BQScreen() {
+  // Obtém a ação de logout para encerrar sessões que falham na autorização.
   const { logout } = useAuth();
+
+  // Dados da API e estados gerais usados por toda a tela.
   const [dados, setDados] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
@@ -54,6 +57,7 @@ export default function BQScreen() {
     opcoes: [],
   });
 
+  // Ao montar a tela, busca o banco de questões e valida o token do usuário.
   useEffect(() => {
     async function carregar() {
       try {
@@ -84,7 +88,7 @@ export default function BQScreen() {
     carregar();
   }, []);
 
-  // Extração das opções únicas
+  // Extrai opções únicas para preencher disciplinas, bancas e níveis de relevância.
   const temas = useMemo(() => opcoesUnicas(dados, 'nome_do_tema'), [dados]);
   const bancas = useMemo(
     () => ['Todos', ...opcoesUnicas(dados, 'nome_do_vestibular')],
@@ -103,7 +107,7 @@ export default function BQScreen() {
     return opcoesUnicas(dadosFiltrados, 'nome_topico');
   }, [dados, filtros.tema]);
 
-  // Aplicação dos filtros e agrupamento
+  // Combina todos os filtros ativos e agrupa as respostas no formato usado pela tela.
   const questoesFiltradas = useMemo(() => {
     const assuntoSelecionado = [
       filtros.assunto1,
@@ -131,10 +135,12 @@ export default function BQScreen() {
   const questaoAtual = questoesFiltradas[indiceAtual];
   const respostaAtual = questaoAtual ? respostas[questaoAtual.id] : null;
 
+  // Atualiza um campo específico sem sobrescrever os demais filtros.
   function atualizarFiltro(campo, valor) {
     setFiltros((prev) => ({ ...prev, [campo]: valor }));
   }
 
+  // Configura e abre o modal usado pelos seletores de tema e assunto.
   function abrirSeletor(campo, titulo, opcoes) {
     setModalSeletor({
       visivel: true,
@@ -144,6 +150,7 @@ export default function BQScreen() {
     });
   }
 
+  // Aplica a escolha feita no modal ou limpa o filtro selecionado.
   function selecionarOpcao(valor) {
     if (modalSeletor.campo) {
       atualizarFiltro(modalSeletor.campo, valor);
@@ -151,17 +158,20 @@ export default function BQScreen() {
     setModalSeletor({ visivel: false, campo: null, titulo: '', opcoes: [] });
   }
 
+  // Reinicia a posição e as respostas antes de abrir a tela de resolução.
   function filtrarQuestoes() {
     setIndiceAtual(0);
     setRespostas({});
     setTela('questoes');
   }
 
+  // Guarda a alternativa selecionada e registra o resultado no armazenamento da aplicação.
   async function responder(questaoId, letra, alternativaCorreta) {
     setRespostas((prev) => ({ ...prev, [questaoId]: letra }));
     await salvarResposta({ questaoId, letra, acertou: alternativaCorreta });
   }
 
+  // Navega pelas questões dentro dos limites da lista filtrada.
   function proximaQuestao() {
     setIndiceAtual((atual) =>
       Math.min(atual + 1, questoesFiltradas.length - 1)
@@ -173,9 +183,11 @@ export default function BQScreen() {
   }
 
   return (
+    // Estrutura principal da tela, incluindo cabeçalho e conteúdo rolável.
     <View style={styles.container}>
       <Header />
 
+      {/* Permite alternar entre configuração dos filtros e resolução das questões. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -338,6 +350,7 @@ export default function BQScreen() {
               </View>
             </View>
 
+            {/* Mensagem exibida quando a carga inicial ou aplicação dos filtros falha. */}
             {erro ? <Text style={styles.errorMessage}>{erro}</Text> : null}
 
             {/* Botão Filtrar Questões */}
