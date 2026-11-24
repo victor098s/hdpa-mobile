@@ -5,19 +5,24 @@ import Menu from '../components/Menu';
 
 export default function PuccampScreen() {
   return (
+    // Estrutura principal da página informativa da PUC-Campinas.
     <View style={styles.container}>
+      {/* Cabeçalho global e menu de navegação entre instituições. */}
       <Header />
       <Menu />
 
+      {/* Área rolável que apresenta o conteúdo sobre a PUC-Campinas. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.main}>
+          {/* Título principal da seção institucional. */}
           <View style={styles.headingSection}>
             <Text style={styles.headingTitle}>Escolas universitárias</Text>
           </View>
 
+          {/* Logotipo da PUC-Campinas centralizado no topo do conteúdo. */}
           <View style={styles.imageContainer}>
             <Image
               source={require('../../assets/puc.png')}
@@ -26,6 +31,7 @@ export default function PuccampScreen() {
             />
           </View>
 
+          {/* Texto explicativo dividido em parágrafos sobre história, cursos e ingresso. */}
           <View style={styles.textContent}>
             <Text style={styles.paragraph}>
               A Pontifícia Universidade Católica de Campinas, conhecida como PUC-CAMP, é uma das instituições privadas de
@@ -70,12 +76,14 @@ export default function PuccampScreen() {
           </View>
         </View>
 
+        {/* Rodapé visual exibido ao final da página. */}
         <View style={styles.footer} />
       </ScrollView>
     </View>
   );
 }
 
+// Folha de estilos da página, do conteúdo textual, da imagem e do rodapé.
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -17,13 +17,16 @@ import { useAuth } from '../context/AuthContext';
 import { COLORS } from '../constants/theme';
 
 export default function LoginScreen() {
+  // Obtém os limites da tela segura e a função de login compartilhada pela aplicação.
   const insets = useSafeAreaInsets();
   const { login } = useAuth();
 
+  // Estados controlados pelos campos do formulário e pelo carregamento da autenticação.
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [carregando, setCarregando] = useState(false);
 
+  // Valida os campos e inicia a autenticação antes de exibir mensagens ao usuário.
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert('Aviso', 'Preencha e-mail e senha.');
@@ -41,10 +44,12 @@ export default function LoginScreen() {
   };
 
   return (
+    // Ajusta o layout quando o teclado abre em dispositivos móveis.
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      {/* Permite rolar o formulário e respeita as áreas segura superior e inferior. */}
       <ScrollView
         contentContainerStyle={[
           styles.container,
@@ -131,6 +136,7 @@ export default function LoginScreen() {
   );
 }
 
+// Folha de estilos da tela, dos campos de entrada e do botão de autenticação.
 const styles = StyleSheet.create({
   flex: {
     flex: 1,

@@ -5,19 +5,24 @@ import Menu from '../components/Menu';
 
 export default function UnicampScreen() {
   return (
+    // Estrutura principal da página informativa da Unicamp.
     <View style={styles.container}>
+      {/* Cabeçalho global e menu de navegação entre instituições. */}
       <Header />
       <Menu />
 
+      {/* Área rolável que reúne o conteúdo institucional da universidade. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.main}>
+          {/* Título principal da seção de universidades. */}
           <View style={styles.headingSection}>
             <Text style={styles.headingTitle}>Escolas universitárias</Text>
           </View>
 
+          {/* Logotipo da Unicamp centralizado no início do conteúdo. */}
           <View style={styles.imageContainer}>
             <Image
               source={require('../../assets/unicamp.png')}
@@ -26,6 +31,7 @@ export default function UnicampScreen() {
             />
           </View>
 
+          {/* Texto dividido em parágrafos sobre história, vestibular e ingresso na Unicamp. */}
           <View style={styles.textContent}>
             <Text style={styles.paragraph}>
               A Universidade Estadual de Campinas, conhecida como Unicamp, é uma das instituições de ensino superior mais
@@ -73,12 +79,14 @@ export default function UnicampScreen() {
           </View>
         </View>
 
+        {/* Rodapé visual exibido ao final da página. */}
         <View style={styles.footer} />
       </ScrollView>
     </View>
   );
 }
 
+// Folha de estilos da página, dos textos, da imagem e do rodapé.
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -6,23 +6,29 @@ import LogoUnesp from '../components/LogoUnesp';
 
 export default function UnespScreen() {
   return (
+    // Estrutura principal da página informativa da Unesp.
     <View style={styles.container}>
+      {/* Cabeçalho global e menu de navegação entre universidades. */}
       <Header />
       <Menu />
 
+      {/* Área rolável que reúne o título, logo e texto sobre a instituição. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.main}>
+          {/* Título principal da seção de universidades. */}
           <View style={styles.headingSection}>
             <Text style={styles.headingTitle}>Escolas universitárias</Text>
           </View>
 
+          {/* Identificação visual da Unesp por meio do componente de logo vetorial. */}
           <View style={styles.imageContainer}>
             <LogoUnesp width={220} height={70} />
           </View>
 
+          {/* Conteúdo textual dividido em parágrafos sobre a universidade e seu vestibular. */}
           <View style={styles.textContent}>
             <Text style={styles.paragraph}>
               A Universidade Estadual Paulista, conhecida como Unesp, é uma das maiores e mais importantes universidades
@@ -65,12 +71,14 @@ export default function UnespScreen() {
           </View>
         </View>
 
+        {/* Rodapé visual exibido ao final da página. */}
         <View style={styles.footer} />
       </ScrollView>
     </View>
   );
 }
 
+// Folha de estilos da página, do conteúdo textual e do rodapé.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
