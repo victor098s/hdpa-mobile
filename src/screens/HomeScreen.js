@@ -16,13 +16,16 @@ import { COLORS } from '../constants/theme';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+// Define um tamanho máximo e mínimo para o gráfico circular conforme a largura da tela.
 const PIE_SIZE = Math.min(280, Math.max(200, SCREEN_WIDTH - 80));
 
 export default function HomeScreen() {
+  // Navegação e referências responsáveis pelo controle da página e do carrossel.
   const navigation = useNavigation();
   const carouselScrollRef = useRef(null);
   const [scrollIndex, setScrollIndex] = useState(0);
 
+  // Lista centralizada das instituições exibidas nos cards da tela inicial.
   const universityCards = [
     { nome: 'ENEM', image: require('../../assets/enem.png'), route: 'Enem' },
     { nome: 'USP', image: require('../../assets/usp.png'), route: 'Usp' },
@@ -31,6 +34,7 @@ export default function HomeScreen() {
     { nome: 'PUC', image: require('../../assets/puc.png'), route: 'Puccamp' },
   ];
 
+  // Move o carrossel entre os cards sem ultrapassar o primeiro ou o último item disponível.
   const handleScroll = (direction) => {
     const cardWidth = 160;
     const nextIndex =
@@ -46,9 +50,11 @@ export default function HomeScreen() {
   };
 
   return (
+    // Estrutura principal da tela inicial da aplicação.
     <View style={styles.container}>
       <Header />
 
+      {/* Área rolável que reúne banner, universidades, gráficos e avaliações. */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -66,6 +72,7 @@ export default function HomeScreen() {
         <View style={[styles.section, SCREEN_WIDTH > 1200 && styles.wideSection]}>
           <Text style={styles.sectionTitle}>Escolas Universitárias</Text>
 
+          {/* Carrossel com botões laterais e navegação para a página de cada instituição. */}
           <View style={styles.carouselContainer}>
             <Pressable
               style={({ pressed }) => [
@@ -119,6 +126,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Resumo visual do desempenho mensal e da evolução dos estudos. */}
         <View style={[styles.section, SCREEN_WIDTH > 1200 && styles.wideSection]}>
           <Text style={styles.sectionTitle}>Visão Geral</Text>
           <View style={[styles.overview, SCREEN_WIDTH >= 900 && styles.overviewWide]}>
@@ -162,6 +170,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Área de avaliação publicada por um usuário da plataforma. */}
         <View style={[styles.section, SCREEN_WIDTH > 1200 && styles.wideSection]}>
           <Text style={styles.sectionTitle}>Avaliações</Text>
           <View style={styles.reviewCard}>
@@ -184,6 +193,7 @@ export default function HomeScreen() {
   );
 }
 
+// Folha de estilos dos blocos, carrossel, gráficos, avaliações e rodapé.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
